@@ -338,6 +338,7 @@ kubectl delete -f k8s/network-garden/
 
 | Dokument | Inhalt |
 |----------|--------|
+| [k8s/YAML_REFERENZ.md](k8s/YAML_REFERENZ.md) | **Konfiguration pro YAML-Datei** |
 | [NETWORK_GARDEN.md](NETWORK_GARDEN.md) | Deploy-Anleitung course-7 |
 | [k8s/network-garden/](k8s/network-garden/) | YAML-Manifeste |
 | [PRÄSENTATION.md](PRÄSENTATION.md) | Folien & Demo |

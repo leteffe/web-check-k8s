@@ -2,6 +2,9 @@
 
 Kurzanleitung für Kubernetes-Details. **Einstieg für das ganze Team:** [README.md](../README.md) im Repo-Root (Klonen, Neustart, `start.sh`).
 
+**YAML-Felder pro Datei:** [YAML_REFERENZ.md](YAML_REFERENZ.md)  
+**Architektur & Diagramme:** [KUBERNETES_ARCHITEKTUR.md](../KUBERNETES_ARCHITEKTUR.md)
+
 Ausführliche Ergebnisse: siehe `RESULTS_*.md` im Repo-Root.
 
 ## Voraussetzungen

@@ -8,6 +8,7 @@
 **GitHub:** [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s)
 
 > Ausführliches Demo-Skript: [DEMO_SKRIPT.md](DEMO_SKRIPT.md)  
+> **Konkreter Ablauf (sagen, zeigen, tippen):** [PRÄSENTATION_ABLAUF.md](PRÄSENTATION_ABLAUF.md)  
 > Deploy auf network.garden: [NETWORK_GARDEN.md](NETWORK_GARDEN.md)  
 > Lokal üben (optional): `./start.sh` → http://localhost:8080
 

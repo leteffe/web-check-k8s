@@ -29,6 +29,7 @@ Die **Web-Check**-App (OSINT-Tool zur Analyse von Websites) soll containerisiert
 | [TASKS_las.md](TASKS_las.md) · [RESULTS_las.md](RESULTS_las.md) | Aufgaben & Ergebnisse — Service |
 | [TASKS_bls.md](TASKS_bls.md) · [RESULTS_bls.md](RESULTS_bls.md) | Aufgaben & Ergebnisse — Tests/Demo |
 | [PRÄSENTATION.md](PRÄSENTATION.md) | Folien & Sprechertexte (10–15 Min) |
+| [PRÄSENTATION_ABLAUF.md](PRÄSENTATION_ABLAUF.md) | **Konkreter Ablauf — was zeigen, sagen, tippen** |
 | [KUBERNETES_ARCHITEKTUR.md](KUBERNETES_ARCHITEKTUR.md) | Kubernetes-Ressourcen & Diagramme |
 | [DEMO_SKRIPT.md](DEMO_SKRIPT.md) | Live-Demo-Ablauf |
 | [k8s/](k8s/) | Manifeste, README, Troubleshooting |

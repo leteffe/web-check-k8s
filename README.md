@@ -139,7 +139,8 @@ kubectl delete -f k8s/
 | [START_SH.md](START_SH.md) | Erklärung von `start.sh` (Schritt für Schritt) |
 | [NETWORK_GARDEN.md](NETWORK_GARDEN.md) | Deploy auf **course-7.network.garden** |
 | [KUBERNETES_ARCHITEKTUR.md](KUBERNETES_ARCHITEKTUR.md) | Pods, Services, HTTPRoute — Diagramme |
-| [k8s/README.md](k8s/README.md) | Kubernetes-Details |
+| [k8s/YAML_REFERENZ.md](k8s/YAML_REFERENZ.md) | Welches Feld in welcher YAML-Datei |
+| [k8s/README.md](k8s/README.md) | Kubernetes-Befehle |
 | [k8s/TROUBLESHOOTING.md](k8s/TROUBLESHOOTING.md) | Fehlerbehebung |
 
 ---

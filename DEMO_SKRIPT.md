@@ -1,5 +1,6 @@
 # Demo-Skript — Web-Check auf Kubernetes (10–15 Min)
 
+> **Konkreter Schritt-für-Schritt-Ablauf:** [PRÄSENTATION_ABLAUF.md](PRÄSENTATION_ABLAUF.md)  
 > Präsentationsfolien: [PRÄSENTATION.md](PRÄSENTATION.md)  
 > Deploy: [NETWORK_GARDEN.md](NETWORK_GARDEN.md)
 
