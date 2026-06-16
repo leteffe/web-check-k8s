@@ -14,6 +14,20 @@ Die **Web-Check**-App (OSINT-Tool zur Analyse von Websites) soll containerisiert
 
 **Empfohlene lokale Umgebung:** [minikube](https://minikube.sigs.k8s.io/), [kind](https://kind.sigs.k8s.io/) oder Docker Desktop mit Kubernetes.
 
+**Schnellstart (Klonen / Neustart):** [README.md](README.md) — `./start.sh`
+
+**Dokumentation (umgesetzt):**
+
+| Datei | Inhalt |
+|-------|--------|
+| [TASKS_lad.md](TASKS_lad.md) · [RESULTS_lad.md](RESULTS_lad.md) | Aufgaben & Ergebnisse — Docker/Image |
+| [TASKS_lob.md](TASKS_lob.md) · [RESULTS_lob.md](RESULTS_lob.md) | Aufgaben & Ergebnisse — Deployment |
+| [TASKS_las.md](TASKS_las.md) · [RESULTS_las.md](RESULTS_las.md) | Aufgaben & Ergebnisse — Service |
+| [TASKS_bls.md](TASKS_bls.md) · [RESULTS_bls.md](RESULTS_bls.md) | Aufgaben & Ergebnisse — Tests/Demo |
+| [PRÄSENTATION.md](PRÄSENTATION.md) | Folien & Sprechertexte (10–15 Min) |
+| [DEMO_SKRIPT.md](DEMO_SKRIPT.md) | Live-Demo-Ablauf |
+| [k8s/](k8s/) | Manifeste, README, Troubleshooting |
+
 ---
 
 ## Team & Aufgabenverteilung
