@@ -2,10 +2,14 @@
 
 **Dauer:** 10–15 Minuten  
 **Team:** lad · lob · las · bls  
-**Demo-URL:** http://localhost:8080 (nach `kubectl port-forward svc/web-check 8080:80`)
+
+**Demo-URL (Präsentation):** **https://course-7.network.garden**
+
+**GitHub:** [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s)
 
 > Ausführliches Demo-Skript: [DEMO_SKRIPT.md](DEMO_SKRIPT.md)  
-> Durchgeführte Arbeit: [RESULTS_lad.md](RESULTS_lad.md) · [RESULTS_lob.md](RESULTS_lob.md) · [RESULTS_las.md](RESULTS_las.md) · [RESULTS_bls.md](RESULTS_bls.md)
+> Deploy auf network.garden: [NETWORK_GARDEN.md](NETWORK_GARDEN.md)  
+> Lokal üben (optional): `./start.sh` → http://localhost:8080
 
 ---
 
@@ -20,7 +24,7 @@
 
 **Sprecher:** bls (0:00)
 
-> „Guten Tag. Wir zeigen, wie wir die Open-Source-App Web-Check mit Docker containerisieren und auf Kubernetes betreiben.“
+> „Guten Tag. Wir zeigen, wie wir die Open-Source-App Web-Check mit Docker containerisieren und auf Kubernetes betreiben — erreichbar unter course-7.network.garden.“
 
 ---
 
@@ -44,7 +48,7 @@
 
 | Ohne K8s | Mit Kubernetes |
 |----------|----------------|
-| Ein Server, manuell starten | Mehrere Pods, automatisch verwaltet |
+| Ein Server, manuell starten | Pods, automatisch verwaltet |
 | Absturz = Ausfall | Neuer Pod wird gestartet |
 | Skalierung manuell | `kubectl scale` |
 
@@ -56,9 +60,9 @@
 
 **Inhalt:**
 - [`Dockerfile`](Dockerfile): Multi-Stage-Build
-- Befehl: `docker build -t web-check:local .`
-- Ergebnis: Image **4.45 GB** (Chromium)
-- Lokal getestet: http://localhost:3000 → HTTP 302
+- Lokal: `docker build -t web-check:local .`
+- Auf network.garden: öffentliches Image `lissy93/web-check` (Cluster kann lokale Images nicht pullen)
+- Image-Grösse ~4.5 GB (Chromium)
 
 **Live (optional):**
 ```bash
@@ -67,7 +71,7 @@ docker images | grep web-check
 
 **Sprecher:** lad (1:30–3:00)
 
-> „Das Dockerfile packt App und Chromium in ein Image. Das ist die Vorlage für jeden Pod.“
+> „Das Dockerfile packt App und Chromium in ein Image. Auf dem Kurs-Cluster nutzen wir ein Image aus der Registry, das jeder Node laden kann.“
 
 **Referenz:** [RESULTS_lad.md](RESULTS_lad.md)
 
@@ -76,45 +80,46 @@ docker images | grep web-check
 ## Folie 5 — Deployment & Pods (lob)
 
 **Inhalt:**
-- [`k8s/deployment.yaml`](k8s/deployment.yaml)
-- 2 Replicas, Label `app: web-check`
+- [`k8s/network-garden/deployment.yaml`](k8s/network-garden/deployment.yaml)
+- Namespace `lab`, Label `app: web-check`
 - Ressourcen-Limits: 512Mi–1Gi RAM
 - Readiness/Liveness-Probes auf Port 3000
 
 **Live:**
 ```bash
-kubectl get pods -l app=web-check
-kubectl describe deployment web-check
+export KUBECONFIG=/pfad/zu/course-7.config
+kubectl get pods -n lab -l app=web-check
+kubectl describe deployment web-check -n lab
 ```
 
 **Sprecher:** lob (3:00–5:00)
 
-> „Ein Deployment verwaltet Pods. Wir wollen zwei Kopien — Kubernetes hält diese Anzahl stabil.“
+> „Das Deployment startet unsere App als Pod im Cluster. `kubectl get pods` zeigt, ob alles läuft.“
 
 **Referenz:** [RESULTS_lob.md](RESULTS_lob.md)
 
 ---
 
-## Folie 6 — Service & Zugriff (las)
+## Folie 6 — Service, HTTPRoute & Zugriff (las)
 
 **Inhalt:**
-- [`k8s/service.yaml`](k8s/service.yaml)
-- Typ: NodePort (Port 30080) oder Port-Forward
-- Service-Port **80** → Container-Port **3000**
-- Endpoints: 2 Pod-IPs verbunden
+- [`k8s/network-garden/service.yaml`](k8s/network-garden/service.yaml) — ClusterIP, Port **8080** → **3000**
+- [`k8s/network-garden/httproute.yaml`](k8s/network-garden/httproute.yaml) — Host `course-7.network.garden`
+- Gateway: `traefik-gateway` (Namespace `traefik`)
+- **Kein Port-Forward nötig** — öffentliche HTTPS-URL
 
 **Live:**
 ```bash
-kubectl get svc web-check
-kubectl get endpoints web-check
-# Browser: http://localhost:8080
+kubectl get svc web-check-svc -n lab
+kubectl get httproute web-check-route -n lab
+# Browser: https://course-7.network.garden
 ```
 
 **Sprecher:** las (5:00–7:00)
 
-> „Pods haben wechselnde IPs. Der Service ist die feste Anlaufstelle für den Browser.“
+> „Der Service verbindet intern die Pods. Die HTTPRoute leitet von aussen auf course-7.network.garden zu unserem Service — das ist der öffentliche Zugang.“
 
-**Referenz:** [RESULTS_las.md](RESULTS_las.md)
+**Referenz:** [RESULTS_las.md](RESULTS_las.md) · [NETWORK_GARDEN.md](NETWORK_GARDEN.md)
 
 ---
 
@@ -122,31 +127,30 @@ kubectl get endpoints web-check
 
 ```mermaid
 flowchart LR
-  browser[Browser] --> pf[PortForward 8080]
-  pf --> svc[Service web-check :80]
-  svc --> pod1[Pod 1 :3000]
-  svc --> pod2[Pod 2 :3000]
-  pod1 --> img[Image web-check:local]
-  pod2 --> img
+  browser[Browser HTTPS] --> gw[traefik-gateway :443]
+  gw --> route[HTTPRoute web-check-route]
+  route --> svc[Service web-check-svc :8080]
+  svc --> pod[Pod web-check :3000]
+  pod --> img[Image lissy93/web-check]
 ```
 
 **Sprecher:** las (12:00–14:00)
 
-> „Der Datenfluss: Browser → Port-Forward → Service → einer der Pods → unser Docker-Image.“
+> „Der Datenfluss: Browser → Gateway → HTTPRoute → Service → Pod. Kein localhost — die App ist direkt unter course-7.network.garden erreichbar.“
 
 ---
 
 ## Folie 8 — Live-Demo (bls)
 
 **Ablauf:**
-1. Browser: http://localhost:8080 öffnen
+1. Browser: **https://course-7.network.garden** öffnen
 2. Domain eingeben: **wikipedia.org**
 3. Analyse-Ergebnisse zeigen
-4. Terminal: `kubectl logs -l app=web-check --tail=10`
+4. Terminal: `kubectl logs -n lab -l app=web-check --tail=10`
 
 **Sprecher:** bls (7:00–10:00)
 
-> „Die App läuft nicht nur lokal in Docker, sondern im Cluster — hochverfügbar mit zwei Pods.“
+> „Die App läuft auf dem Kurs-Cluster — nicht nur lokal auf unserem Laptop, sondern öffentlich über Kubernetes.“
 
 ---
 
@@ -154,33 +158,33 @@ flowchart LR
 
 **Live:**
 ```bash
-kubectl scale deployment web-check --replicas=3
-kubectl get pods -w
-kubectl scale deployment web-check --replicas=2
+kubectl scale deployment web-check -n lab --replicas=2
+kubectl get pods -n lab -w
+kubectl scale deployment web-check -n lab --replicas=1
 ```
 
 **Inhalt:**
-- Mehr Last → mehr Pods
-- Weniger Last → Pods werden entfernt
+- Mehr Replicas → mehr Pods
+- Weniger Replicas → Pods werden entfernt
 - Selbstheilung: Pod löschen → neuer Pod
 
 **Sprecher:** lob (10:00–12:00)
 
-> „Mit einem Befehl skalieren wir von zwei auf drei Instanzen — ohne die App neu zu installieren.“
+> „Mit einem Befehl skalieren wir die Instanzen — ohne die App neu zu installieren.“
 
 ---
 
 ## Folie 10 — Lessons Learned & Fazit
 
 **Inhalt:**
-- Image ist gross (Chromium) — Build dauert ~7 Min
-- Image muss im Cluster verfügbar sein (`kind load` / minikube docker-env)
-- Port-Forward ist praktisch für Demos
-- Kubernetes-Begriffe: Pod, Deployment, Service
+- Remote-Cluster braucht Image aus Registry (nicht `web-check:local`)
+- HTTPRoute + Gateway statt Port-Forward für öffentlichen Zugriff
+- Team **lad**, **lob**, **las**, **bls** — Code auf [GitHub](https://github.com/leteffe/web-check-k8s)
+- Kubernetes-Begriffe: Pod, Deployment, Service, HTTPRoute
 
 **Sprecher:** bls (14:00–15:00)
 
-> „Wir haben gelernt, wie Container-Images, Deployments und Services zusammenspielen. Kubernetes automatisiert Betrieb und Skalierung.“
+> „Wir haben gelernt, wie Container-Images, Deployments, Services und HTTPRoutes zusammenspielen — und die App unter course-7.network.garden betreiben.“
 
 ---
 
@@ -189,7 +193,7 @@ kubectl scale deployment web-check --replicas=2
 **Fragen vorbereiten:**
 - Was passiert bei Pod-Absturz? → Neuer Pod
 - Unterschied Docker vs. Kubernetes? → Docker = ein Container; K8s = viele Container orchestrieren
-- Warum 2 Pods? → Verfügbarkeit, Lastverteilung
+- Warum HTTPRoute statt Port-Forward? → Öffentliche Domain ohne lokales Terminal
 
 **Sprecher:** bls
 
@@ -199,38 +203,50 @@ kubectl scale deployment web-check --replicas=2
 
 | Begriff | Kurz erklärt |
 |---------|--------------|
-| **Image** | Vorlage aus Dockerfile (`web-check:local`) |
+| **Image** | Container-Vorlage (`lissy93/web-check` auf network.garden) |
 | **Pod** | Laufende Instanz des Containers |
 | **Deployment** | Verwaltet Anzahl und Updates der Pods |
-| **Service** | Stabile Netzwerk-Adresse für Pods |
-| **NodePort** | Externer Port auf dem Cluster-Node |
-| **Port-Forward** | Lokaler Tunnel zum Service |
+| **Service** | Stabile Netzwerk-Adresse für Pods (intern) |
+| **HTTPRoute** | Leitet externe Domain zum Service (Gateway API) |
+| **Gateway** | `traefik-gateway` — HTTPS-Eingang (Port 443) |
 
 ---
 
-## Technische Nachweise (bereits erledigt)
+## Technische Nachweise
 
 | Check | Ergebnis |
 |-------|----------|
-| `docker build` | Erfolg, 4.45 GB |
-| Lokaler Test :3000 | HTTP 302 |
-| Pods Running | 2/2 |
-| Service Endpoints | 2 IPs :3000 |
-| Browser :8080 | HTTP 302 |
-| Skalierung 3→2 | Erfolg |
+| Deploy auf course-7 | Pods `Running` in Namespace `lab` |
+| HTTPRoute | Host `course-7.network.garden` |
+| Browser | https://course-7.network.garden → HTTP 302 |
+| Team / Repo | lad, lob, las, bls · github.com/leteffe/web-check-k8s |
 
-Details in den `RESULTS_*.md`-Dateien.
+Details: [NETWORK_GARDEN.md](NETWORK_GARDEN.md), `RESULTS_*.md`
 
 ---
 
-## Setup-Befehle (Handout)
+## Setup vor der Präsentation (network.garden)
 
 ```bash
-docker build -t web-check:local .
-kind create cluster --name web-check
-kind load docker-image web-check:local --name web-check
-kubectl apply -f k8s/
-kubectl port-forward svc/web-check 8080:80
+export KUBECONFIG=/pfad/zu/course-7.config
+kubectl config set-context --current --namespace=lab
+
+kubectl apply -f k8s/network-garden/
+kubectl rollout status deployment/web-check -n lab --timeout=180s
+kubectl get pods,httproute -n lab -l app=web-check
 ```
 
-Vollständig: [`k8s/README.md`](k8s/README.md)
+**Browser testen:** https://course-7.network.garden
+
+Vollständig: [NETWORK_GARDEN.md](NETWORK_GARDEN.md)
+
+---
+
+## Optional: Lokal üben (nicht für die Live-Präsentation)
+
+```bash
+./start.sh
+# → http://localhost:8080 (kind + Port-Forward)
+```
+
+Siehe [README.md](README.md) und [START_SH.md](START_SH.md).

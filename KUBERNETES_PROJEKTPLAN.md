@@ -198,26 +198,29 @@ kubectl delete -f k8s/
 
 ## Präsentation & Demo (10–15 Minuten)
 
+**Demo-URL:** https://course-7.network.garden  
+**Folien & Skript:** [PRÄSENTATION.md](PRÄSENTATION.md) · [DEMO_SKRIPT.md](DEMO_SKRIPT.md)
+
 ### Ablauf (wer spricht)
 
 | Zeit | Sprecher | Inhalt |
 |------|----------|--------|
-| 0:00–1:30 | **bls** | Begrüssung, Projektziel: Web-Check auf Kubernetes |
-| 1:30–3:00 | **lad** | Warum Container? Kurz Dockerfile & `docker run -p 3000:3000` |
-| 3:00–5:00 | **lob** | Deployment, Pods, Replicas — `kubectl get pods` live |
-| 5:00–7:00 | **las** | Service, Ports 80→3000 — Zugriff im Browser zeigen |
-| 7:00–10:00 | **bls** | Live-Demo: Website in Web-Check analysieren |
-| 10:00–12:00 | **lob** | Skalierung: `kubectl scale …` oder zweiten Pod zeigen |
-| 12:00–14:00 | **las** | Architektur-Diagramm (siehe unten) |
+| 0:00–1:30 | **bls** | Begrüssung, Projektziel, GitHub, Team lad/lob/las/bls |
+| 1:30–3:00 | **lad** | Dockerfile, Image/Registry auf network.garden |
+| 3:00–5:00 | **lob** | Deployment, Pods — `kubectl get pods -n lab` |
+| 5:00–7:00 | **las** | Service + HTTPRoute — **https://course-7.network.garden** |
+| 7:00–10:00 | **bls** | Live-Demo: Domain in Web-Check analysieren |
+| 10:00–12:00 | **lob** | Skalierung: `kubectl scale … -n lab` |
+| 12:00–14:00 | **las** | Architektur: Gateway → HTTPRoute → Service → Pod |
 | 14:00–15:00 | **bls** | Fazit, Lessons Learned, Q&A |
 
 ### Live-Demo Checkliste (bls moderiert)
 
-1. Terminal: `kubectl get pods,services` — alles `Running` / Service hat Port
-2. Browser: App öffnen (Port-Forward oder NodePort)
-3. Domain eingeben (z. B. `wikipedia.org`) — Ergebnis zeigen
-4. Terminal: `kubectl logs -l app=web-check --tail=20`
-5. Optional: Pod löschen → Kubernetes startet neuen Pod (`kubectl delete pod …`)
+1. Terminal: `kubectl get pods,httproute -n lab` — Pod `Running`
+2. Browser: **https://course-7.network.garden** (kein Port-Forward)
+3. Domain eingeben (z. B. `wikipedia.org`) — Ergebnis zeigen
+4. Terminal: `kubectl logs -n lab -l app=web-check --tail=20`
+5. Optional: Pod löschen → Kubernetes startet neuen Pod
 
 ### Kubernetes-Begriffe (kurz erklären)
 
