@@ -1,5 +1,9 @@
 # Kubernetes-Schulprojekt: Web-Check auf Kubernetes
 
+**Team:** **lad** · **lob** · **las** · **bls**  
+**GitHub:** [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s)  
+**Live:** [course-7.network.garden](https://course-7.network.garden)
+
 ## Projektziel
 
 Die **Web-Check**-App (OSINT-Tool zur Analyse von Websites) soll containerisiert auf **Kubernetes** laufen. Das Team richtet Image, Manifeste und Zugriff ein, testet den Betrieb und präsentiert das Ergebnis in einer **10–15 Minuten Demo**.

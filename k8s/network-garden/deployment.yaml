@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-check
+  namespace: lab
+  labels:
+    app: web-check
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-check
+  template:
+    metadata:
+      labels:
+        app: web-check
+    spec:
+      containers:
+        - name: web-check
+          # Öffentliches Image (Remote-Cluster kann web-check:local nicht pullen)
+          image: lissy93/web-check:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 40
+            periodSeconds: 20

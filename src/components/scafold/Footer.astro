@@ -11,9 +11,17 @@ const projectName = 'Web Check';
 const authorName = 'Alicia Sykes';
 const authorLink = 'https://aliciasykes.com';
 const currentYear = new Date().getFullYear();
+
+const teamMembers = 'lad · lob · las · bls';
+const teamRepo = 'github.com/leteffe/web-check-k8s';
+const teamGithub = `https://${teamRepo}`;
 ---
 
 <footer>
+  <p>
+    Schulprojekt Kubernetes — Setup auf network.garden: <strong>{teamMembers}</strong>
+    — <a href={teamGithub}>{teamRepo}</a>
+  </p>
   <p>
     View source at <a href={github}>{repo}</a>
   </p>

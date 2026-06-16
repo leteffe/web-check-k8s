@@ -2,7 +2,11 @@
 
 Die [Web-Check](https://web-check.xyz)-App (OSINT-Tool zur Website-Analyse) läuft in diesem Repo containerisiert auf **Kubernetes**.
 
-**Team:** lad · lob · las · bls
+**Team:** **lad** · **lob** · **las** · **bls**
+
+**GitHub:** [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s)
+
+**Live (Kurs-Cluster):** [course-7.network.garden](https://course-7.network.garden)
 
 ---
 
@@ -21,7 +25,7 @@ Docker Desktop muss **laufen**, bevor du startest.
 ## Repo klonen (erstes Mal)
 
 ```bash
-git clone <repo-url> web-check-k8s
+git clone https://github.com/leteffe/web-check-k8s.git
 cd web-check-k8s
 chmod +x start.sh
 ./start.sh
@@ -38,7 +42,9 @@ Das Skript erledigt automatisch:
 
 **Ausführliche Erklärung jedes Schritts:** [START_SH.md](START_SH.md)
 
-**App im Browser:** http://localhost:8080  
+**Auf dem Kurs-Cluster (öffentliche URL):** [NETWORK_GARDEN.md](NETWORK_GARDEN.md) → https://course-7.network.garden
+
+**App im Browser (lokal):** http://localhost:8080  
 
 Das Terminal mit Port-Forward **offen lassen** (Beenden mit `Ctrl+C`).
 
@@ -131,6 +137,7 @@ kubectl delete -f k8s/
 | [PRÄSENTATION.md](PRÄSENTATION.md) | Folien & Sprechertexte (10–15 Min) |
 | [DEMO_SKRIPT.md](DEMO_SKRIPT.md) | Live-Demo-Ablauf |
 | [START_SH.md](START_SH.md) | Erklärung von `start.sh` (Schritt für Schritt) |
+| [NETWORK_GARDEN.md](NETWORK_GARDEN.md) | Deploy auf **course-7.network.garden** |
 | [k8s/README.md](k8s/README.md) | Kubernetes-Details |
 | [k8s/TROUBLESHOOTING.md](k8s/TROUBLESHOOTING.md) | Fehlerbehebung |
 

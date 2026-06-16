@@ -14,6 +14,8 @@
 **Titel:** Web-Check auf Kubernetes  
 **Untertitel:** Container, Deployment, Service — Schulprojekt  
 **Team:** lad, lob, las, bls  
+**GitHub:** [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s)  
+**Live:** [course-7.network.garden](https://course-7.network.garden)  
 **Datum:** _______________
 
 **Sprecher:** bls (0:00)
