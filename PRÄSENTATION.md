@@ -3,7 +3,7 @@
 **Dauer:** 10–15 Minuten  
 **Team:** lad · lob · las · bls  
 
-**Demo-URL (Präsentation):** **https://course-7.network.garden**
+**Demo-URL (Präsentation):** **https://course-7.network.garden/check**
 
 **GitHub:** [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s)
 
@@ -19,12 +19,12 @@
 **Untertitel:** Container, Deployment, Service — Schulprojekt  
 **Team:** lad, lob, las, bls  
 **GitHub:** [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s)  
-**Live:** [course-7.network.garden](https://course-7.network.garden)  
+**Live:** [course-7.network.garden/check](https://course-7.network.garden/check)  
 **Datum:** _______________
 
 **Sprecher:** bls (0:00)
 
-> „Guten Tag. Wir zeigen, wie wir die Open-Source-App Web-Check mit Docker containerisieren und auf Kubernetes betreiben — erreichbar unter course-7.network.garden.“
+> „Guten Tag. Wir zeigen, wie wir die Open-Source-App Web-Check mit Docker containerisieren und auf Kubernetes betreiben — das Tool findet ihr unter course-7.network.garden/check.“
 
 ---
 
@@ -112,7 +112,7 @@ kubectl describe deployment web-check -n lab
 ```bash
 kubectl get svc web-check-svc -n lab
 kubectl get httproute web-check-route -n lab
-# Browser: https://course-7.network.garden
+# Browser: https://course-7.network.garden/check
 ```
 
 **Sprecher:** las (5:00–7:00)
@@ -125,6 +125,8 @@ kubectl get httproute web-check-route -n lab
 
 ## Folie 7 — Architektur
 
+Siehe [KUBERNETES_ARCHITEKTUR.md](KUBERNETES_ARCHITEKTUR.md) für vollständige Diagramme.
+
 ```mermaid
 flowchart LR
   browser[Browser HTTPS] --> gw[traefik-gateway :443]
@@ -136,14 +138,14 @@ flowchart LR
 
 **Sprecher:** las (12:00–14:00)
 
-> „Der Datenfluss: Browser → Gateway → HTTPRoute → Service → Pod. Kein localhost — die App ist direkt unter course-7.network.garden erreichbar.“
+> „Der Datenfluss: Browser → Gateway → HTTPRoute → Service → Pod. Das Tool startet unter /check — die Root-URL leitet dorthin weiter.“
 
 ---
 
 ## Folie 8 — Live-Demo (bls)
 
 **Ablauf:**
-1. Browser: **https://course-7.network.garden** öffnen
+1. Browser: **https://course-7.network.garden/check** öffnen
 2. Domain eingeben: **wikipedia.org**
 3. Analyse-Ergebnisse zeigen
 4. Terminal: `kubectl logs -n lab -l app=web-check --tail=10`
@@ -218,7 +220,7 @@ kubectl scale deployment web-check -n lab --replicas=1
 |-------|----------|
 | Deploy auf course-7 | Pods `Running` in Namespace `lab` |
 | HTTPRoute | Host `course-7.network.garden` |
-| Browser | https://course-7.network.garden → HTTP 302 |
+| Browser | https://course-7.network.garden/check lädt |
 | Team / Repo | lad, lob, las, bls · github.com/leteffe/web-check-k8s |
 
 Details: [NETWORK_GARDEN.md](NETWORK_GARDEN.md), `RESULTS_*.md`
@@ -236,7 +238,7 @@ kubectl rollout status deployment/web-check -n lab --timeout=180s
 kubectl get pods,httproute -n lab -l app=web-check
 ```
 
-**Browser testen:** https://course-7.network.garden
+**Browser testen:** https://course-7.network.garden/check
 
 Vollständig: [NETWORK_GARDEN.md](NETWORK_GARDEN.md)
 

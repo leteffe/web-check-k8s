@@ -3,7 +3,7 @@
 > Präsentationsfolien: [PRÄSENTATION.md](PRÄSENTATION.md)  
 > Deploy: [NETWORK_GARDEN.md](NETWORK_GARDEN.md)
 
-**Demo-URL:** **https://course-7.network.garden**
+**Demo-URL:** **https://course-7.network.garden/check**
 
 ---
 
@@ -18,8 +18,8 @@ kubectl rollout status deployment/web-check -n lab --timeout=180s
 kubectl get pods,svc,httproute -n lab -l app=web-check
 ```
 
-- [ ] Browser-Tab: **https://course-7.network.garden**
-- [ ] Startseite lädt (Redirect auf `/check` ist normal)
+- [ ] Browser-Tab: **https://course-7.network.garden/check**
+- [ ] Startseite `/check` lädt (Eingabefeld für URL sichtbar)
 - [ ] Zweites Terminal für `kubectl`-Befehle (kein Port-Forward nötig)
 - [ ] Demo-Domain notiert: **wikipedia.org**
 
@@ -34,7 +34,7 @@ kubectl get pods,svc,httproute -n lab -l app=web-check
 | 0:00 | **bls** | Begrüssung, Team vorstellen, Ziel erklären |
 | 1:30 | **lad** | Dockerfile, Image auf Registry, warum Container |
 | 3:00 | **lob** | `kubectl get pods -n lab`, Deployment erklären |
-| 5:00 | **las** | `kubectl get httproute`, Browser: course-7.network.garden |
+| 5:00 | **las** | `kubectl get httproute`, Browser: course-7.network.garden/check |
 | 7:00 | **bls** | Domain analysieren, Logs zeigen |
 | 10:00 | **lob** | `kubectl scale deployment web-check -n lab --replicas=2` |
 | 12:00 | **las** | Architektur-Folie (Gateway → HTTPRoute → Service) |
@@ -54,7 +54,7 @@ kubectl get pods,svc,httproute -n lab -l app=web-check
 „Das Deployment startet den Pod im Namespace lab. `kubectl get pods -n lab` — hier läuft Web-Check.“
 
 ### las — 5:00
-„Die HTTPRoute verbindet course-7.network.garden mit unserem Service. Im Browser öffnen wir https://course-7.network.garden — ohne localhost, ohne Port-Forward.“
+„Die HTTPRoute verbindet course-7.network.garden mit unserem Service. Im Browser öffnen wir https://course-7.network.garden/check — dort startet das Web-Check-Tool.“
 
 ### bls — 7:00
 „Wir geben eine Domain ein — Web-Check analysiert die Seite. Parallel: `kubectl logs -n lab` zeigt die App im Cluster.“
@@ -112,4 +112,4 @@ Falls ihr vorher auf dem eigenen Rechner testen wollt:
 # → http://localhost:8080
 ```
 
-Das ist ein **anderes** Setup (kind + Port-Forward). Die **Präsentation** läuft über **https://course-7.network.garden**.
+Das ist ein **anderes** Setup (kind + Port-Forward). Die **Präsentation** läuft über **https://course-7.network.garden/check**.

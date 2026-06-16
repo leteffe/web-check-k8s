@@ -6,7 +6,7 @@ Die [Web-Check](https://web-check.xyz)-App (OSINT-Tool zur Website-Analyse) läu
 
 **GitHub:** [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s)
 
-**Live (Kurs-Cluster):** [course-7.network.garden](https://course-7.network.garden)
+**Live (Kurs-Cluster):** [course-7.network.garden/check](https://course-7.network.garden/check)
 
 ---
 
@@ -42,7 +42,7 @@ Das Skript erledigt automatisch:
 
 **Ausführliche Erklärung jedes Schritts:** [START_SH.md](START_SH.md)
 
-**Auf dem Kurs-Cluster (öffentliche URL):** [NETWORK_GARDEN.md](NETWORK_GARDEN.md) → https://course-7.network.garden
+**Auf dem Kurs-Cluster (öffentliche URL):** [NETWORK_GARDEN.md](NETWORK_GARDEN.md) → https://course-7.network.garden/check
 
 **App im Browser (lokal):** http://localhost:8080  
 
@@ -138,6 +138,7 @@ kubectl delete -f k8s/
 | [DEMO_SKRIPT.md](DEMO_SKRIPT.md) | Live-Demo-Ablauf |
 | [START_SH.md](START_SH.md) | Erklärung von `start.sh` (Schritt für Schritt) |
 | [NETWORK_GARDEN.md](NETWORK_GARDEN.md) | Deploy auf **course-7.network.garden** |
+| [KUBERNETES_ARCHITEKTUR.md](KUBERNETES_ARCHITEKTUR.md) | Pods, Services, HTTPRoute — Diagramme |
 | [k8s/README.md](k8s/README.md) | Kubernetes-Details |
 | [k8s/TROUBLESHOOTING.md](k8s/TROUBLESHOOTING.md) | Fehlerbehebung |
 

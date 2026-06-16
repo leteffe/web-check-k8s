@@ -2,7 +2,7 @@
 
 **Team:** **lad** · **lob** · **las** · **bls**  
 **GitHub:** [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s)  
-**Live:** [course-7.network.garden](https://course-7.network.garden)
+**Live:** [course-7.network.garden/check](https://course-7.network.garden/check)
 
 ## Projektziel
 
@@ -29,6 +29,7 @@ Die **Web-Check**-App (OSINT-Tool zur Analyse von Websites) soll containerisiert
 | [TASKS_las.md](TASKS_las.md) · [RESULTS_las.md](RESULTS_las.md) | Aufgaben & Ergebnisse — Service |
 | [TASKS_bls.md](TASKS_bls.md) · [RESULTS_bls.md](RESULTS_bls.md) | Aufgaben & Ergebnisse — Tests/Demo |
 | [PRÄSENTATION.md](PRÄSENTATION.md) | Folien & Sprechertexte (10–15 Min) |
+| [KUBERNETES_ARCHITEKTUR.md](KUBERNETES_ARCHITEKTUR.md) | Kubernetes-Ressourcen & Diagramme |
 | [DEMO_SKRIPT.md](DEMO_SKRIPT.md) | Live-Demo-Ablauf |
 | [k8s/](k8s/) | Manifeste, README, Troubleshooting |
 
@@ -198,7 +199,7 @@ kubectl delete -f k8s/
 
 ## Präsentation & Demo (10–15 Minuten)
 
-**Demo-URL:** https://course-7.network.garden  
+**Demo-URL:** https://course-7.network.garden/check  
 **Folien & Skript:** [PRÄSENTATION.md](PRÄSENTATION.md) · [DEMO_SKRIPT.md](DEMO_SKRIPT.md)
 
 ### Ablauf (wer spricht)
@@ -208,7 +209,7 @@ kubectl delete -f k8s/
 | 0:00–1:30 | **bls** | Begrüssung, Projektziel, GitHub, Team lad/lob/las/bls |
 | 1:30–3:00 | **lad** | Dockerfile, Image/Registry auf network.garden |
 | 3:00–5:00 | **lob** | Deployment, Pods — `kubectl get pods -n lab` |
-| 5:00–7:00 | **las** | Service + HTTPRoute — **https://course-7.network.garden** |
+| 5:00–7:00 | **las** | Service + HTTPRoute — **https://course-7.network.garden/check** |
 | 7:00–10:00 | **bls** | Live-Demo: Domain in Web-Check analysieren |
 | 10:00–12:00 | **lob** | Skalierung: `kubectl scale … -n lab` |
 | 12:00–14:00 | **las** | Architektur: Gateway → HTTPRoute → Service → Pod |
@@ -217,7 +218,7 @@ kubectl delete -f k8s/
 ### Live-Demo Checkliste (bls moderiert)
 
 1. Terminal: `kubectl get pods,httproute -n lab` — Pod `Running`
-2. Browser: **https://course-7.network.garden** (kein Port-Forward)
+2. Browser: **https://course-7.network.garden/check** (kein Port-Forward)
 3. Domain eingeben (z. B. `wikipedia.org`) — Ergebnis zeigen
 4. Terminal: `kubectl logs -n lab -l app=web-check --tail=20`
 5. Optional: Pod löschen → Kubernetes startet neuen Pod

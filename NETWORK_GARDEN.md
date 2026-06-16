@@ -2,11 +2,13 @@
 
 Deployment der Schulprojekt-App auf dem **Kurs-Cluster** (network.garden), nicht lokal mit kind.
 
-**Live:** https://course-7.network.garden
+**Live:** https://course-7.network.garden/check
 
 **Team (Setup auf der Plattform):** **lad** · **lob** · **las** · **bls**
 
 **GitHub:** https://github.com/leteffe/web-check-k8s
+
+**Kubernetes-Architektur (Diagramme):** [KUBERNETES_ARCHITEKTUR.md](KUBERNETES_ARCHITEKTUR.md)
 
 Referenz-Umgebung: [`mil_cyber_k8s`](../../mil_cyber_k8s) — dort sind Kubeconfig, Domain und HTTPRoute-Muster dokumentiert.
 
@@ -16,7 +18,7 @@ Referenz-Umgebung: [`mil_cyber_k8s`](../../mil_cyber_k8s) — dort sind Kubeconf
 
 | | |
 |---|---|
-| **Live-URL** | https://course-7.network.garden |
+| **Live-URL** | https://course-7.network.garden/check |
 | **Team** | **lad** (Docker/Image) · **lob** (Deployment) · **las** (Service/HTTPRoute) · **bls** (Tests/Demo) |
 | **GitHub** | [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s) |
 
@@ -28,7 +30,9 @@ Dieses Setup auf network.garden wurde vom Team **lad**, **lob**, **las** und **b
 
 Nach erfolgreichem Deploy:
 
-**https://course-7.network.garden**
+**https://course-7.network.garden/check**
+
+Die Startseite `/` leitet per HTTP 302 auf `/check` weiter — für die App direkt `/check` öffnen.
 
 (HTTPS über Gateway `traefik-gateway`, Port 443)
 
@@ -77,7 +81,7 @@ kubectl rollout status deployment/web-check -n lab --timeout=180s
 kubectl get pods,svc,httproute -n lab -l app=web-check
 ```
 
-**Browser:** https://course-7.network.garden
+**Browser:** https://course-7.network.garden/check
 
 ---
 
@@ -141,7 +145,7 @@ export KUBECONFIG=/Users/latifadili/mil_cyber_k8s/lad/course-7.config
 kubectl get pods -n lab -l app=web-check
 kubectl logs -n lab -l app=web-check --tail=50
 kubectl describe httproute web-check-route -n lab
-curl -sI https://course-7.network.garden
+curl -sI https://course-7.network.garden/check
 ```
 
 | Symptom | Lösung |
@@ -181,6 +185,6 @@ Dann in `deployment.yaml` das `image:` anpassen.
 | **lad** | Image-Wahl / optional Push in Registry |
 | **lob** | `deployment.yaml` anwenden, Pods prüfen |
 | **las** | `service.yaml` + `httproute.yaml`, Domain testen |
-| **bls** | https://course-7.network.garden im Browser demonstrieren |
+| **bls** | https://course-7.network.garden/check im Browser demonstrieren |
 
 Siehe auch [RESULTS_*.md](../RESULTS_las.md) für lokale Ergebnisse; auf dem Kurs-Cluster gelten die Befehle in diesem Dokument.
