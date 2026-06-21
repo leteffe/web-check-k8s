@@ -1,116 +1,41 @@
-# Demo-Skript — Web-Check auf Kubernetes (10–15 Min)
+# Demo-Skript – Web-Check auf Kubernetes
 
-> **Konkreter Schritt-für-Schritt-Ablauf:** [PRÄSENTATION_ABLAUF.md](PRÄSENTATION_ABLAUF.md)  
-> Präsentationsfolien: [PRÄSENTATION.md](PRÄSENTATION.md)  
-> Deploy: [NETWORK_GARDEN.md](NETWORK_GARDEN.md)
+Dieses Skript zeigt die Kernidee des Gruppenprojekts in etwa zehn Minuten: Anwendung containerisieren, auf Kubernetes deployen und über einen Service erreichbar machen.
 
-**Demo-URL:** **https://course-7.network.garden/check**
-
----
-
-## Vor der Präsentation (15 Min vorher)
+## Vorbereitung
 
 ```bash
-export KUBECONFIG=/Users/latifadili/mil_cyber_k8s/lad/course-7.config
-kubectl config set-context --current --namespace=lab
-
-kubectl apply -f k8s/network-garden/
-kubectl rollout status deployment/web-check -n lab --timeout=180s
-kubectl get pods,svc,httproute -n lab -l app=web-check
+kubectl apply -f k8s/
+kubectl wait --for=condition=available deployment/web-check --timeout=180s
+kubectl get pods,svc -l app=web-check
+kubectl port-forward svc/web-check 8080:80
 ```
 
-- [ ] Browser-Tab: **https://course-7.network.garden/check**
-- [ ] Startseite `/check` lädt (Eingabefeld für URL sichtbar)
-- [ ] Zweites Terminal für `kubectl`-Befehle (kein Port-Forward nötig)
-- [ ] Demo-Domain notiert: **wikipedia.org**
-
-**Kein** `kubectl port-forward` — die App ist über die Domain erreichbar.
-
----
+Im Browser <http://localhost:8080> öffnen.
 
 ## Ablauf
 
-| Zeit | Wer | Aktion |
-|------|-----|--------|
-| 0:00 | **bls** | Begrüssung, Team vorstellen, Ziel erklären |
-| 1:30 | **lad** | Dockerfile, Image auf Registry, warum Container |
-| 3:00 | **lob** | `kubectl get pods -n lab`, Deployment erklären |
-| 5:00 | **las** | `kubectl get httproute`, Browser: course-7.network.garden/check |
-| 7:00 | **bls** | Domain analysieren, Logs zeigen |
-| 10:00 | **lob** | `kubectl scale deployment web-check -n lab --replicas=2` |
-| 12:00 | **las** | Architektur-Folie (Gateway → HTTPRoute → Service) |
-| 14:00 | **bls** | Fazit, GitHub, Team-Kürzel, Q&A |
+| Abschnitt | Inhalt |
+|---|---|
+| Einführung | Ziel: Web-Check als containerisierte Anwendung auf Kubernetes betreiben. |
+| Docker | `Dockerfile` zeigt den reproduzierbaren Build des Images. |
+| Deployment | Zwei Pods, Ressourcenlimits und Health-Checks erklären. |
+| Service | Service selektiert Pods über `app: web-check` und leitet Port 80 auf 3000 weiter. |
+| Live-Test | Eine Test-Domain in Web-Check analysieren und die App-Antwort zeigen. |
+| Skalierung | `kubectl scale deployment web-check --replicas=3` ausführen und neue Pods beobachten. |
+| Fazit | Kubernetes hält die gewünschte Zahl Pods bereit und entkoppelt Zugriff vom einzelnen Pod. |
 
----
-
-## Sprechertexte (Kurz)
-
-### bls — 0:00
-„Wir zeigen, wie die Web-Check-App auf Kubernetes läuft — öffentlich unter course-7.network.garden. Unser Code liegt auf GitHub, umgesetzt von lad, lob, las und bls.“
-
-### lad — 1:30
-„Das Dockerfile baut ein Image mit Node 22 und Chromium. Auf dem Kurs-Cluster nutzen wir `lissy93/web-check` aus der Registry — der Cluster kann keine lokalen Images laden.“
-
-### lob — 3:00
-„Das Deployment startet den Pod im Namespace lab. `kubectl get pods -n lab` — hier läuft Web-Check.“
-
-### las — 5:00
-„Die HTTPRoute verbindet course-7.network.garden mit unserem Service. Im Browser öffnen wir https://course-7.network.garden/check — dort startet das Web-Check-Tool.“
-
-### bls — 7:00
-„Wir geben eine Domain ein — Web-Check analysiert die Seite. Parallel: `kubectl logs -n lab` zeigt die App im Cluster.“
-
-### lob — 10:00
-„`kubectl scale --replicas=2` — ein zweiter Pod erscheint. Skalierung ohne Neuinstallation.“
-
-### las — 12:00
-„Browser → Gateway → HTTPRoute → Service → Pod. Jede Schicht hat eine Aufgabe.“
-
-### bls — 14:00
-„Kubernetes auf network.garden — Team lad, lob, las, bls. Repo: github.com/leteffe/web-check-k8s. Fragen?“
-
----
-
-## Live-Befehle (zum Kopieren)
+## Nützliche Befehle
 
 ```bash
-export KUBECONFIG=/Users/latifadili/mil_cyber_k8s/lad/course-7.config
-
-# Status
-kubectl get all,httproute -n lab -l app=web-check
-
-# Logs
-kubectl logs -n lab -l app=web-check --tail=15
-
-# Skalierung
-kubectl scale deployment web-check -n lab --replicas=2
-kubectl get pods -n lab -w
-
-# Zurück
-kubectl scale deployment web-check -n lab --replicas=1
+kubectl get all -l app=web-check
+kubectl logs -l app=web-check --tail=30
+kubectl scale deployment web-check --replicas=3
+kubectl scale deployment web-check --replicas=2
 ```
 
----
-
-## Notfall
-
-| Problem | Lösung |
-|---------|--------|
-| Pods nicht Ready | `kubectl describe pod -n lab -l app=web-check` |
-| Seite nicht erreichbar | `kubectl get httproute -n lab`; ggf. `kubectl apply -f k8s/network-garden/` |
-| `connection refused` (kubectl) | `export KUBECONFIG=.../course-7.config` setzen |
-| Kein Internet in Schule | Screenshot / curl-Ergebnis aus NETWORK_GARDEN.md |
-| Zeit knapp | Skalierungs-Block kürzen |
-
----
-
-## Lokal üben (nicht für die Schul-Präsentation)
-
-Falls ihr vorher auf dem eigenen Rechner testen wollt:
+## Rückbau
 
 ```bash
-./start.sh
-# → http://localhost:8080
+kubectl delete -f k8s/
 ```
-
-Das ist ein **anderes** Setup (kind + Port-Forward). Die **Präsentation** läuft über **https://course-7.network.garden/check**.

@@ -1,166 +1,67 @@
-# Web-Check auf Kubernetes — Schulprojekt
+# Web-Check auf Kubernetes
 
-Die [Web-Check](https://web-check.xyz)-App (OSINT-Tool zur Website-Analyse) läuft in diesem Repo containerisiert auf **Kubernetes**.
+Dieses Repository dokumentiert ein **Gruppenprojekt**, in dem wir die Open-Source-Anwendung [Web-Check](https://web-check.xyz) containerisiert und auf Kubernetes bereitgestellt haben.
 
-**Team:** **lad** · **lob** · **las** · **bls**
+Der öffentliche Umfang ist bewusst klein gehalten: Docker-Image, Kubernetes-Manifeste, lokale Startanleitung und anonymisierte Projektartefakte. Es enthält keine Zugangsdaten, persönlichen Pfade oder Angaben zu einer externen Kurs- bzw. Cluster-Infrastruktur.
 
-**GitHub:** [github.com/leteffe/web-check-k8s](https://github.com/leteffe/web-check-k8s)
+## Projektumfang
 
-**Live (Kurs-Cluster):** [course-7.network.garden/check](https://course-7.network.garden/check)
+- Web-Check als Docker-Container bauen
+- Deployment mit zwei replizierten Pods erstellen
+- Service für den Zugriff auf Port 3000 bereitstellen
+- Health-Checks sowie CPU- und Speicherlimits konfigurieren
+- Deployment und Skalierung lokal mit `kind` prüfen
 
----
+## Herkunft der Anwendung
 
-## Voraussetzungen
+Web-Check wurde ursprünglich von [Alicia Sykes](https://github.com/lissy93/web-check) veröffentlicht und steht unter der MIT-Lizenz. Die Lizenz und Urheberhinweise bleiben in diesem Repository erhalten. Unser Gruppenprojekt betrifft die Containerisierung und Kubernetes-Bereitstellung.
 
-| Tool | Installation (macOS) | Prüfen |
-|------|----------------------|--------|
-| **Docker Desktop** | [docker.com](https://www.docker.com/products/docker-desktop/) | `docker info` |
-| **kubectl** | `brew install kubectl` | `kubectl version --client` |
-| **kind** | `brew install kind` | `kind version` |
+## Architektur
 
-Docker Desktop muss **laufen**, bevor du startest.
-
----
-
-## Repo klonen (erstes Mal)
-
-```bash
-git clone https://github.com/leteffe/web-check-k8s.git
-cd web-check-k8s
-chmod +x start.sh
-./start.sh
+```text
+Browser → Port-Forward :8080 → Service :80 → Pods :3000 → Docker-Image
 ```
 
-Das Skript erledigt automatisch:
+Weitere Details: [KUBERNETES_ARCHITEKTUR.md](KUBERNETES_ARCHITEKTUR.md)
 
-1. Docker prüfen  
-2. kind-Cluster `web-check` erstellen (einmalig)  
-3. Docker-Image bauen (`web-check:local`, dauert ca. 5–10 Min)  
-4. Image ins Cluster laden  
-5. Kubernetes-Manifeste deployen  
-6. Port-Forward starten  
+## Lokal starten
 
-**Ausführliche Erklärung jedes Schritts:** [START_SH.md](START_SH.md)
-
-**Auf dem Kurs-Cluster (öffentliche URL):** [NETWORK_GARDEN.md](NETWORK_GARDEN.md) → https://course-7.network.garden/check
-
-**App im Browser (lokal):** http://localhost:8080  
-
-Das Terminal mit Port-Forward **offen lassen** (Beenden mit `Ctrl+C`).
-
----
-
-## Nach Neustart (Mac / Docker neu gestartet)
-
-Cluster und Image existieren meist noch — kein vollständiger Neuaufbau nötig:
+Voraussetzungen: Docker, `kubectl` und [kind](https://kind.sigs.k8s.io/).
 
 ```bash
-cd web-check-k8s
-./start.sh
-```
-
-Oder manuell:
-
-```bash
-# Docker Desktop starten, dann:
-cd web-check-k8s
-
-docker start web-check-control-plane 2>/dev/null || kind start cluster --name web-check
+kind create cluster --name web-check
+docker build -t web-check:local .
 kind load docker-image web-check:local --name web-check
-
-kubectl config use-context kind-web-check
 kubectl apply -f k8s/
 kubectl wait --for=condition=available deployment/web-check --timeout=180s
-
-lsof -ti:8080 | xargs kill 2>/dev/null   # falls Port belegt
 kubectl port-forward svc/web-check 8080:80
-# → http://localhost:8080
 ```
 
----
+Danach ist die App unter <http://localhost:8080> erreichbar. Das Terminal mit dem Port-Forward muss geöffnet bleiben.
 
-## Frische Installation (alles von Null)
+Alternativ übernimmt `./start.sh` diese Schritte für einen lokalen `kind`-Cluster.
 
-Wenn du Cluster und Image komplett neu aufsetzen willst:
+## Projektdateien
 
-```bash
-cd web-check-k8s
+| Pfad | Zweck |
+|---|---|
+| [Dockerfile](Dockerfile) | Build der Anwendung als Container-Image |
+| [k8s/deployment.yaml](k8s/deployment.yaml) | Deployment, Replikate, Ressourcen und Health-Checks |
+| [k8s/service.yaml](k8s/service.yaml) | Service für den Zugriff auf die Pods |
+| [k8s/README.md](k8s/README.md) | Kurzanleitung für das Deployment |
+| [KUBERNETES_PROJEKTPLAN.md](KUBERNETES_PROJEKTPLAN.md) | Anonymisierte Arbeitspakete |
+| [DEMO_SKRIPT.md](DEMO_SKRIPT.md) | Kompakter Ablauf für eine Demo |
+| `TASKS_*.md` und `RESULTS_*.md` | Projektartefakte und Testergebnisse |
 
-# Altes aufräumen (optional)
-kubectl delete -f k8s/ --ignore-not-found
-kind delete cluster --name web-check
-
-# Neu starten
-./start.sh
-```
-
----
-
-## Nur App lokal testen (ohne Kubernetes)
+## Aufräumen
 
 ```bash
-docker build -t web-check:local .
-docker run --rm -p 3000:3000 web-check:local
-# → http://localhost:3000
-```
-
----
-
-## Nützliche Befehle
-
-```bash
-# Status
-kubectl get all -l app=web-check
-
-# Logs
-kubectl logs -l app=web-check --tail=50
-
-# Skalierung (Demo)
-kubectl scale deployment web-check --replicas=3
-kubectl scale deployment web-check --replicas=2
-
-# Aufräumen (App aus Cluster entfernen)
 kubectl delete -f k8s/
+kind delete cluster --name web-check
 ```
 
----
+## Hinweise für Veröffentlichungen
 
-## Projekt-Dokumentation
-
-| Datei | Inhalt |
-|-------|--------|
-| [KUBERNETES_PROJEKTPLAN.md](KUBERNETES_PROJEKTPLAN.md) | Gesamtplan & Aufgabenverteilung |
-| [TASKS_lad.md](TASKS_lad.md) · [RESULTS_lad.md](RESULTS_lad.md) | Docker & Image |
-| [TASKS_lob.md](TASKS_lob.md) · [RESULTS_lob.md](RESULTS_lob.md) | Deployment & Pods |
-| [TASKS_las.md](TASKS_las.md) · [RESULTS_las.md](RESULTS_las.md) | Service & Zugriff |
-| [TASKS_bls.md](TASKS_bls.md) · [RESULTS_bls.md](RESULTS_bls.md) | Tests & Demo |
-| [PRÄSENTATION.md](PRÄSENTATION.md) | Folien & Sprechertexte (10–15 Min) |
-| [DEMO_SKRIPT.md](DEMO_SKRIPT.md) | Live-Demo-Ablauf |
-| [START_SH.md](START_SH.md) | Erklärung von `start.sh` (Schritt für Schritt) |
-| [NETWORK_GARDEN.md](NETWORK_GARDEN.md) | Deploy auf **course-7.network.garden** |
-| [KUBERNETES_ARCHITEKTUR.md](KUBERNETES_ARCHITEKTUR.md) | Pods, Services, HTTPRoute — Diagramme |
-| [k8s/YAML_REFERENZ.md](k8s/YAML_REFERENZ.md) | Welches Feld in welcher YAML-Datei |
-| [k8s/README.md](k8s/README.md) | Kubernetes-Befehle |
-| [k8s/TROUBLESHOOTING.md](k8s/TROUBLESHOOTING.md) | Fehlerbehebung |
-
----
-
-## Häufige Probleme
-
-| Problem | Lösung |
-|---------|--------|
-| `Docker daemon not running` | Docker Desktop starten |
-| `address already in use` (8080) | `lsof -ti:8080 \| xargs kill` dann Port-Forward neu |
-| `ImagePullBackOff` | `kind load docker-image web-check:local --name web-check` |
-| Pods `Pending` / `CrashLoopBackOff` | `kubectl describe pod -l app=web-check` — siehe [k8s/TROUBLESHOOTING.md](k8s/TROUBLESHOOTING.md) |
-| `kind: command not found` | `brew install kind` |
-
----
-
-## Architektur (Kurz)
-
-```
-Browser → Port-Forward :8080 → Service :80 → Pods :3000 → Image web-check:local
-```
-
-Manifeste: [`k8s/deployment.yaml`](k8s/deployment.yaml) · [`k8s/service.yaml`](k8s/service.yaml)
+- Keine `.env`-, Kubeconfig- oder Zertifikatsdateien committen.
+- Für eigene Deployments nur eigene Domains, Registries und Zugänge verwenden.
+- Vor einem Push die Git-Historie auf personenbezogene Commit-Metadaten prüfen.

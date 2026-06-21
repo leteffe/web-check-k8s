@@ -160,7 +160,7 @@ kubectl port-forward svc/web-check 8080:80
 minikube addons enable ingress
 ```
 
-Erstelle [`k8s/ingress.yaml`](k8s/ingress.yaml):
+Optional kann ein eigenes Ingress-Manifest ergänzt werden:
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -183,7 +183,7 @@ spec:
 
 ```bash
 # /etc/hosts: 127.0.0.1 web-check.local (minikube IP ggf. anpassen)
-kubectl apply -f k8s/ingress.yaml
+# Optional: Manifest selbst erstellen und dann mit kubectl apply anwenden
 ```
 
 - [ ] Ingress nur wenn Demo stabil — sonst bei NodePort/Port-Forward bleiben
@@ -212,7 +212,7 @@ kubectl apply -f k8s/ingress.yaml
 - [ ] [`k8s/service.yaml`](k8s/service.yaml) im Repo
 - [ ] App im Browser erreichbar (URL dokumentiert)
 - [ ] Zugriffs-Anleitung in `k8s/README.md`
-- [ ] Optional: `k8s/ingress.yaml`
+- [ ] Optional: eigenes Ingress-Manifest
 
 ---
 

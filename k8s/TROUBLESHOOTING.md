@@ -1,22 +1,19 @@
-# Troubleshooting — Web-Check auf Kubernetes
+# Troubleshooting – Web-Check auf Kubernetes
 
-| Fehler | Bedeutung | Verantwortlich | Lösung |
-|--------|-----------|----------------|--------|
-| `ImagePullBackOff` / `ErrImagePull` | Image nicht im Cluster | lad | `eval $(minikube docker-env)` und `docker build -t web-check:local .` oder `minikube image load web-check:local` |
-| `CrashLoopBackOff` | Container startet nicht | lob / lad | `kubectl logs -l app=web-check`; Speicher erhöhen oder `replicas: 1` testen |
-| Pod `Pending` | Keine Ressourcen auf Node | lob | `kubectl describe pod`; Cluster-RAM erhöhen oder requests senken |
-| Leere Endpoints | Service findet keine Pods | las / lob | Labels prüfen: `kubectl get pods --show-labels`; Selector `app: web-check` |
-| Browser: Verbindung fehlgeschlagen | Falscher Port / kein Forward | las | `kubectl port-forward svc/web-check 8080:80` |
-| `connection refused` auf localhost:8080 | Port-Forward nicht aktiv | las | Terminal mit Port-Forward offen lassen |
-| Readiness probe failed | App braucht länger zum Start | lob | `initialDelaySeconds` in deployment.yaml erhöhen |
-| Build schlägt fehl (Docker) | Netzwerk / Architektur | lad | `docker build --platform linux/amd64 -t web-check:local .` auf Apple Silicon |
+| Symptom | Ursache | Lösung |
+|---|---|---|
+| `ImagePullBackOff` | Das lokale Image ist nicht im kind-Cluster. | `kind load docker-image web-check:local --name web-check` erneut ausführen. |
+| `CrashLoopBackOff` | Der Container konnte nicht starten. | `kubectl logs -l app=web-check --tail=100` prüfen; bei Bedarf Ressourcen des Clusters erhöhen. |
+| Pod bleibt `Pending` | Zu wenig CPU oder Speicher im Cluster. | `kubectl describe pod -l app=web-check` ausführen und den Cluster mit mehr Ressourcen starten. |
+| Keine Endpoints | Service-Selector und Pod-Labels passen nicht zusammen. | `kubectl get pods --show-labels` prüfen; beide Seiten verwenden `app: web-check`. |
+| Browser nicht erreichbar | Port-Forward läuft nicht. | `kubectl port-forward svc/web-check 8080:80` starten und offen lassen. |
+| Readiness-Probe schlägt fehl | Die Anwendung benötigt noch Startzeit. | Logs prüfen und bei Bedarf die `initialDelaySeconds` erhöhen. |
 
-## Nützliche Befehle
+## Diagnosebefehle
 
 ```bash
 kubectl get all -l app=web-check
 kubectl describe pod -l app=web-check
 kubectl logs -l app=web-check --tail=100
 kubectl get endpoints web-check
-kubectl events --sort-by='.lastTimestamp'
 ```
